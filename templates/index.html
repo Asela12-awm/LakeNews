@@ -5,8 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>LakeNews - Latest News</title>
+<style>
 
-    <link rel="stylesheet" href="templates/style.css">
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: Arial, sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #e11d48
+                );
+        }
+
+        .login-box {
+            width: min(420px, 90%);
+
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.3);
+        }
+
+        .logo {
+            text-align: center;
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #e11d48;
+        }
+
+        h2 {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 14px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #e11d48;
+        }
+
+        button {
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #e11d48;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #be123c;
+        }
+
+        .flash {
+            padding: 12px;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            text-align: center;
+        }
+
+        .back {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #64748b;
+
+            text-decoration: none;
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
