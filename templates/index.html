@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LakeNews - Latest News</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container header-content">
+
+        <div class="logo">
+            📰 Lake<span class="logo-red">News</span>
+        </div>
+
+        <nav class="desktop-nav">
+
+            <a href="/" class="nav-link active">
+                Home
+            </a>
+
+            <a href="#news">
+                Sri Lanka
+            </a>
+
+            <a href="#news">
+                World
+            </a>
+
+            <a href="#news">
+                Technology
+            </a>
+
+            <a href="#news">
+                Sports
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <a
+                href="{{ url_for('login') }}"
+                class="icon-button"
+                title="Admin"
+            >
+                🔐
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<div class="breaking-wrapper">
+
+    <div class="container breaking-news">
+
+        <div class="breaking-label">
+            🔴 BREAKING NEWS
+        </div>
+
+        <div class="breaking-text">
+
+            Latest news updates from LakeNews
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<section class="hero">
+
+    <div class="container hero-grid">
+
+        <div class="hero-content">
+
+            <span class="category-badge">
+                NEWS
+            </span>
+
+            <h1>
+                Latest News From Sri Lanka & Around The World
+            </h1>
+
+            <p>
+                Stay updated with the latest stories,
+                technology, sports and world news.
+            </p>
+
+            <a
+                href="#news"
+                class="primary-button"
+            >
+                Explore News →
+            </a>
+
+        </div>
+
+        <div class="hero-image">
+
+            <img
+                src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80"
+                alt="News"
+            >
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<main
+    class="container main-content"
+    id="news"
+>
+
+    <div class="top-bar">
+
+        <div>
+
+            <h2>
+                Latest News
+            </h2>
+
+            <p>
+                Latest articles published by LakeNews
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="news-grid">
+
+        {% if news %}
+
+            {% for item in news %}
+
+                <article class="news-card">
+
+                    <div class="news-card-image">
+
+                        {% if item["image"] %}
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='uploads/' + item['image']
+                                ) }}"
+                                alt="{{ item['title'] }}"
+                                loading="lazy"
+                            >
+
+                        {% else %}
+
+                            <img
+                                src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1000&q=80"
+                                alt="News"
+                            >
+
+                        {% endif %}
+
+                        <span class="news-category">
+                            {{ item["category"] }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="news-card-body">
+
+                        <div class="news-meta">
+                            {{ item["created_at"] }}
+                            ·
+                            {{ item["author"] }}
+                        </div>
+
+                        <h3>
+                            {{ item["title"] }}
+                        </h3>
+
+                        <p>
+                            {{ item["description"] }}
+                        </p>
+
+                        <button
+                            class="read-more"
+                            onclick="showNews(
+                                {{ item['id'] }}
+                            )"
+                        >
+                            Read Full Story →
+                        </button>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="no-results">
+
+                <div class="no-results-icon">
+                    📰
+                </div>
+
+                <h3>
+                    No news published yet
+                </h3>
+
+                <p>
+                    Admin can login and publish the first article.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container footer-grid">
+
+        <div>
+
+            <div class="footer-logo">
+                📰 Lake<span>News</span>
+            </div>
+
+            <p>
+                Your daily source for news and updates.
+            </p>
+
+        </div>
+
+        <div>
+
+            <h3>
+                Admin
+            </h3>
+
+            <a href="{{ url_for('login') }}">
+                Admin Login
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="copyright">
+
+        © {{ current_year if current_year else 2026 }}
+        NewsWave.
+        All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<!-- News Modal -->
+
+<div
+    id="newsModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <button
+            class="close-modal"
+            onclick="closeNews()"
+        >
+            ×
+        </button>
+
+        <img
+            id="modalImage"
+            src=""
+            alt="News"
+        >
+
+        <div class="modal-body">
+
+            <span
+                id="modalCategory"
+                class="category-badge"
+            ></span>
+
+            <h2 id="modalTitle"></h2>
+
+            <div
+                id="modalDate"
+                class="modal-date"
+            ></div>
+
+            <p id="modalDescription"></p>
+
+            <p id="modalContent"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const newsData = {{ news|list|tojson }};
+
+
+function showNews(id) {
+
+    const article =
+        newsData.find(
+            item => item.id === id
+        );
+
+    if (!article) {
+        return;
+    }
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        article.title;
+
+
+    document.getElementById(
+        "modalCategory"
+    ).textContent =
+        article.category;
+
+
+    document.getElementById(
+        "modalDate"
+    ).textContent =
+        article.created_at +
+        " · " +
+        article.author;
+
+
+    document.getElementById(
+        "modalDescription"
+    ).textContent =
+        article.description;
+
+
+    document.getElementById(
+        "modalContent"
+    ).textContent =
+        article.content;
+
+
+    const image =
+        document.getElementById(
+            "modalImage"
+        );
+
+
+    if (article.image) {
+
+        image.src =
+            "/static/uploads/" +
+            article.image;
+
+    } else {
+
+        image.src =
+            "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1000&q=80";
+
+    }
+
+
+    document.getElementById(
+        "newsModal"
+    ).classList.add("show");
+
+}
+
+
+function closeNews() {
+
+    document.getElementById(
+        "newsModal"
+    ).classList.remove("show");
+
+}
+
+
+document
+    .getElementById("newsModal")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+                closeNews();
+            }
+
+        }
+    );
+
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+            closeNews();
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
+

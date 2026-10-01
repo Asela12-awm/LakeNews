@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if news %}
+            Edit News
+        {% else %}
+            Add News
+        {% endif %}
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #f1f5f9;
+
+            color: #111827;
+        }
+
+        header {
+            background: #111827;
+
+            color: white;
+
+            padding: 18px 5%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 23px;
+
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: #e11d48;
+        }
+
+        header a {
+            color: white;
+
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(800px, 92%);
+
+            margin: 40px auto;
+        }
+
+        .form-box {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 10px 30px rgba(15,23,42,.08);
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 9px;
+
+            margin-bottom: 20px;
+
+            outline: none;
+
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #e11d48;
+        }
+
+        textarea {
+            min-height: 150px;
+
+            resize: vertical;
+        }
+
+        .current-image {
+            width: 200px;
+
+            height: 120px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+
+            margin-bottom: 15px;
+        }
+
+        .buttons {
+            display: flex;
+
+            gap: 10px;
+        }
+
+        button,
+        .cancel {
+            padding: 13px 20px;
+
+            border-radius: 9px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+        }
+
+        button {
+            border: none;
+
+            background: #e11d48;
+
+            color: white;
+
+            cursor: pointer;
+        }
+
+        .cancel {
+            background: #e5e7eb;
+
+            color: #111827;
+        }
+
+        .flash {
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        📰 News<span>Wave</span>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}">
+        ← Dashboard
+    </a>
+
+</header>
+
+
+<div class="container">
+
+    <div class="form-box">
+
+        <h1>
+
+            {% if news %}
+                Edit News
+            {% else %}
+                Add News
+            {% endif %}
+
+        </h1>
+
+
+        {% with messages = get_flashed_messages() %}
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="flash">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <label>
+                News Title
+            </label>
+
+            <input
+                type="text"
+                name="title"
+                placeholder="Enter news title"
+                value="{{
+                    news['title']
+                    if news else ''
+                }}"
+                required
+            >
+
+
+            <label>
+                Category
+            </label>
+
+            <select
+                name="category"
+                required
+            >
+
+                {% set current_category =
+                    news['category']
+                    if news else ''
+                %}
+
+                <option
+                    value=""
+                    {% if not current_category %}
+                        selected
+                    {% endif %}
+                >
+                    Select Category
+                </option>
+
+                <option
+                    value="Sri Lanka"
+                    {% if current_category == "Sri Lanka" %}
+                        selected
+                    {% endif %}
+                >
+                    🇱🇰 Sri Lanka
+                </option>
+
+                <option
+                    value="World"
+                    {% if current_category == "World" %}
+                        selected
+                    {% endif %}
+                >
+                    🌍 World
+                </option>
+
+                <option
+                    value="Technology"
+                    {% if current_category == "Technology" %}
+                        selected
+                    {% endif %}
+                >
+                    💻 Technology
+                </option>
+
+                <option
+                    value="Sports"
+                    {% if current_category == "Sports" %}
+                        selected
+                    {% endif %}
+                >
+                    ⚽ Sports
+                </option>
+
+            </select>
+
+
+            <label>
+                Short Description
+            </label>
+
+            <textarea
+                name="description"
+                placeholder="Short news description"
+                required
+            >{{ news['description'] if news else '' }}</textarea>
+
+
+            <label>
+                Full News Content
+            </label>
+
+            <textarea
+                name="content"
+                placeholder="Write the full news article..."
+                required
+            >{{ news['content'] if news else '' }}</textarea>
+
+
+            <label>
+                Author
+            </label>
+
+            <input
+                type="text"
+                name="author"
+                value="{{
+                    news['author']
+                    if news
+                    else 'NewsWave Team'
+                }}"
+                required
+            >
+
+
+            {% if news and news["image"] %}
+
+                <label>
+                    Current Image
+                </label>
+
+                <img
+                    class="current-image"
+                    src="{{ url_for(
+                        'static',
+                        filename='uploads/' + news['image']
+                    ) }}"
+                    alt="Current Image"
+                >
+
+            {% endif %}
+
+
+            <label>
+                {% if news %}
+                    Replace Image
+                {% else %}
+                    News Image
+                {% endif %}
+            </label>
+
+            <input
+                type="file"
+                name="image"
+                accept=".jpg,.jpeg,.png,.webp,.gif"
+            >
+
+
+            <div class="buttons">
+
+                <button type="submit">
+
+                    {% if news %}
+                        Update News
+                    {% else %}
+                        Publish News
+                    {% endif %}
+
+                </button>
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="cancel"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
+
